@@ -1,0 +1,43 @@
+#include <VirtualWire.h>
+
+bool start = false;
+int loopCount = 0;
+void setup() {
+  vw_setup(2000);
+  vw_set_tx_pin(12);
+  vw_set_ptt_inverted(true);
+  Serial.begin(9600);
+}
+
+void loop() {
+ int btnPin = 8;
+ if(digitalRead(btnPin) == LOW){
+  start = true;
+  Serial.println("Started");
+ }
+ if(start == true){
+  int i;
+  char msg;
+  for(i = 0; i < 10; i++){
+    msg = '1';
+    vw_send((uint8_t *)&msg, 1);
+    vw_wait_tx();
+    Serial.println("1");
+    delay(1);
+    loopCount++;
+ }
+
+  for(i = 0; i < 10; i++){
+   msg = '0';
+   vw_send((uint8_t *)&msg, 1);
+   vw_wait_tx();
+   Serial.println("0");
+   delay(1);
+   loopCount++;
+ }
+ }
+ if(loopCount >= 500){
+  start = false;
+ }
+ 
+}
